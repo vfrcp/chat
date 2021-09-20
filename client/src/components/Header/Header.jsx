@@ -1,13 +1,19 @@
 import React from "react"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { useLocation } from "react-router"
 import { Link } from "react-router-dom"
+import { AuthApi } from "../../api/auth"
 
 
 export default function Header(){
+  const dispatch = useDispatch()
   const location = useLocation().pathname
-  let auth = useSelector(srate => srate)
+  let auth = useSelector(state => state)
   if(auth.hasOwnProperty("id")){auth = true}else{auth = false}
+  const logout = async () => {
+    await AuthApi.logout()
+    dispatch({type: "SET_AUTH", payload: {}})
+  }
   return(
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
       <div className="container-fluid">
@@ -58,7 +64,7 @@ export default function Header(){
             {
               auth ?
               <li className="nav-item">
-                <Link className="nav-link" to="/auth/register">Logout</Link>
+                <span className="nav-link" onClick={logout}>Logout</span>
               </li> :
               <li className="nav-item">
               {

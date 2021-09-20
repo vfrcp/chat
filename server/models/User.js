@@ -7,6 +7,7 @@ const userSchema = new Schema({
   id: String, 
   username: String, 
   email: String, 
+  password: String,
   friends: Array,
   friendsReq: Array,
   tokens: Array,
@@ -15,6 +16,14 @@ const userSchema = new Schema({
 const user = Db.model("User", userSchema)
 
 class User{
+  static async getAll(){
+    const users = await user.find({})
+    const response = users.map(user => {
+      return {id: user.id, username: user.username, friends: user.friends}
+    })
+    return response
+  }
+
   static async register(id, username, email, password, tokenR){
     const withUsername = await user.findOne({username})
     const withEmail = await user.findOne({email})

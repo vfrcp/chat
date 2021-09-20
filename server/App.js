@@ -14,11 +14,12 @@ App.use(express.json())
 App.use(cookie())
 App.use(express.urlencoded({extended: true}))
 
-
 const auth = require("./routers/auth")
+const users = require("./routers/users")
 const err404 = require("./routers/err404")
 
 App.use("/auth", auth)
+App.use("/users", users)
 
 App.use(err404)
 

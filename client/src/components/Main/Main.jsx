@@ -7,6 +7,8 @@ export default function Main(){
   const auth = useSelector(state => state)
   console.log(auth)
   return(
-    <h1 className="main">This is site where you can text with other people</h1>
+    <section className="main">
+      <h1 className="main">This is site where you can text with other people</h1>
+    </section>
   )
 }
