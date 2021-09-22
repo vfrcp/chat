@@ -23,7 +23,6 @@ class User{
     })
     return response
   }
-
   static async register(id, username, email, password, tokenR){
     const withUsername = await user.findOne({username})
     const withEmail = await user.findOne({email})
@@ -53,16 +52,6 @@ class User{
       throw "User not exist"
     }
   }
-  static async writeToken(id, token){
-    const candidate = await user.findOne({id})
-    if(candidate){
-      candidate.tokens.push(token)
-      await candidate.save()
-      return {message: "success"}
-    }else{
-      throw "User not exist"
-    }
-  }
   static async logout(id, tokenR){
     const candidate = await user.findOne({id})
     if(candidate){
@@ -72,6 +61,16 @@ class User{
         }
       })
       await candidate.save()
+    }
+  }
+  static async writeToken(id, token){
+    const candidate = await user.findOne({id})
+    if(candidate){
+      candidate.tokens.push(token)
+      await candidate.save()
+      return {message: "success"}
+    }else{
+      throw "User not exist"
     }
   }
   static async rewriteToken(id, Newtoken, prewToken){
@@ -86,7 +85,15 @@ class User{
       await candidate.save()
       return {message: "success"}
     }else{
-      throw "not exist"
+      throw "User not exist"
+    }
+  }
+  static async getFriends(id){
+    const candidate = await user.findOne({id})
+    if(candidate){
+      return candidate.friends
+    }else{
+      throw "User not exist"
     }
   }
 }

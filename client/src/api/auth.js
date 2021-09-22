@@ -41,8 +41,4 @@ export class AuthApi{
     }
     return response
   }
-  static async getAll(){
-    let response = await fetch(`${global.serverLink}/users/getAll`)
-    return await response.json()
-  }
 }

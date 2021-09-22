@@ -16,7 +16,6 @@ export default function App(){
     const check = async () => {
       try{
         const data = await AuthApi.checkToken()
-        console.log(data)
         if(Object.keys(data).length){
           dispatch({type: "SET_AUTH", payload: {id: data.id, username: data.username}})
           localStorage.setItem("token", data.token)
@@ -29,7 +28,7 @@ export default function App(){
     check()
   }, [dispatch])
   return(
-    <div className="app">
+    <div className="app" style={{height: "100vh"}}>
       <BrowserRouter>
         <Header/>
         <Switch> 

@@ -52,10 +52,8 @@ router.post("/check", async (req, res) => {
     const tokens = Tokens.verify(null, req.body.tokenA)
     if(tokens.tokenA){
       res.send({token: req.body.tokenA, ...tokens.tokenA})
-      console.log("Hell")
     }else{
       const tokens = Tokens.verify(req.cookies.token)
-      console.log(tokens)
       if(tokens.tokenR){
         const newTokens = Tokens.create(tokens.tokenR.id, tokens.tokenR.username)
         await User.rewriteToken(tokens.tokenR.id, newTokens.tokenR, req.cookies.token)
@@ -65,13 +63,11 @@ router.post("/check", async (req, res) => {
         })
         res.send({token: newTokens.tokenA, ...tokens.tokenR})
       }else{
-        console.log("else")
         res.clearCookie("token")
         res.send({})
       }
     }
   }catch(err){
-    console.log(err.message)
     res.clearCookie("token")
     res.send({})
   }
