@@ -4,6 +4,9 @@ const cookie = require('cookie-parser')
 const Db = require("mongoose")
 require("dotenv").config()
 const App = express()
+const expressWs = require('express-ws')(App)
+const aWss = expressWs.getWss()
+module.exports = aWss
 
 App.use(cors({
   credentials: true,
@@ -16,11 +19,12 @@ App.use(express.urlencoded({extended: true}))
 
 const auth = require("./routers/auth")
 const users = require("./routers/users")
+const webSoket = require("./routers/websocket")
 const err404 = require("./routers/err404")
 
 App.use("/auth", auth)
 App.use("/users", users)
-
+App.use("/ws", webSoket)
 App.use(err404)
 
 const start = async (PORT = 5000) => {

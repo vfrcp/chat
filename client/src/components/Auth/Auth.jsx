@@ -27,7 +27,6 @@ export default function Auth({history}){
         errHandler.current.style.color = "black"
       }, 3000)
     }
-    console.log(response)
   }
   return(
     type === "login" ? 

@@ -8,8 +8,7 @@ import { AuthApi } from "../../api/auth"
 export default function Header(){
   const dispatch = useDispatch()
   const location = useLocation().pathname
-  let auth = useSelector(state => state)
-  if(auth.hasOwnProperty("id")){auth = true}else{auth = false}
+  const auth = useSelector(state => state.auth)
   const logout = async () => {
     await AuthApi.logout()
     dispatch({type: "SET_AUTH", payload: {}})
@@ -32,6 +31,7 @@ export default function Header(){
             </li>
             <li className="nav-item">
               {
+                auth.hasOwnProperty("id") &&
                 location === "/myChats" ?
                 <span style={{cursor: "pointer"}} className="nav-link active" to="/myChats">My Chats</span> :
                 <Link className="nav-link" to="/myChats">My Chats</Link>
@@ -44,15 +44,28 @@ export default function Header(){
                 <Link className="nav-link" to="/allPeople">All people</Link>
               }
             </li>
-            <li className="nav-item">
+            {
+              auth.hasOwnProperty("id") &&
+              <li className="nav-item">
               {
                 location === "/myFriends" ?
                 <span style={{cursor: "pointer"}} className="nav-link active" to="/myFriends">My Friends</span> :
                 <Link className="nav-link" to="/myFriends">My Friends</Link>
               }
-            </li>
+              </li>
+            }
             {
-              !auth &&
+              auth.hasOwnProperty("id") &&
+              <li className="nav-item">
+              {
+                location === "/gotedReq" ?
+                <span style={{cursor: "pointer"}} className="nav-link active" to="/gotedReq">Got Reqequsts</span> :
+                <Link className="nav-link" to="/gotedReq">Got Reqequsts</Link>
+              }
+              </li>
+            }
+            {
+              !auth.hasOwnProperty("id") &&
               <li className="nav-item">
                 {
                   location === "/auth/login" ?
@@ -62,7 +75,7 @@ export default function Header(){
               </li>
             }
             {
-              auth ?
+              auth.hasOwnProperty("id") ?
               <li className="nav-item">
                 <span className="nav-link" onClick={logout}>Logout</span>
               </li> :
@@ -75,10 +88,6 @@ export default function Header(){
             </li>
             }
           </ul>
-          <form className="d-flex">
-            <input className="form-control me-2" type="search" placeholder="Search people" aria-label="Search" />
-            <button className="btn btn-outline-light" type="submit">Search</button>
-          </form>
         </div>
       </div>
     </nav>

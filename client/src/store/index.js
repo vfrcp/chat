@@ -1,4 +1,10 @@
-import { createStore } from "redux";
+import { createStore, combineReducers } from "redux";
 import { authReducer } from "./authReduser";
+import { webSocketReducer } from "./webSocketReduser";
 
-export const store = createStore(authReducer)
+const rootReducer = combineReducers({
+  auth: authReducer,
+  webSocket: webSocketReducer
+})
+
+export const store = createStore(rootReducer)

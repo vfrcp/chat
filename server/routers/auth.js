@@ -1,4 +1,4 @@
-const {Router, response} = require("express")
+const {Router} = require("express")
 const {nanoid} = require("nanoid")
 const router = Router()
 
@@ -37,7 +37,6 @@ router.post("/login", async (req, res) => {
 
 router.post("/logout", async (req, res) => {
   try{
-    console.log("hee")
     const tokens = Tokens.verify(req.cookies.token)
     await User.logout(tokens.tokenR.id, req.cookies.token)
     res.clearCookie("token")

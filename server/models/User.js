@@ -9,9 +9,10 @@ const userSchema = new Schema({
   email: String, 
   password: String,
   friends: Array,
-  friendsReq: Array,
+  gotedReq: Array,
+  sendedReq: Array,
   tokens: Array,
-})
+}, { versionKey: false })
 
 const user = Db.model("User", userSchema)
 
@@ -19,7 +20,7 @@ class User{
   static async getAll(){
     const users = await user.find({})
     const response = users.map(user => {
-      return {id: user.id, username: user.username, friends: user.friends}
+      return {id: user.id, username: user.username, friends: user.friends, gotedReq: user.gotedReq, sendedReq: user.sendedReq}
     })
     return response
   }
@@ -88,12 +89,88 @@ class User{
       throw "User not exist"
     }
   }
-  static async getFriends(id){
+  static async get(id, type){
     const candidate = await user.findOne({id})
     if(candidate){
-      return candidate.friends
+      const data = candidate[type]
+      return await user.find({id: { $in: data}})
     }else{
       throw "User not exist"
+    }
+  }
+  static async sendReq(senderId, recipientId){
+    const sender = await user.findOne({id: senderId})
+    const recipient = await user.findOne({id: recipientId})
+    if(sender && recipient){
+      sender.sendedReq.push(recipientId),
+      recipient.gotedReq.push(senderId)
+      await sender.save()
+      await recipient.save()
+    }else{
+      throw "One of users not exist"
+    }
+  }
+  static async acceptReq(senderId, recipientId){
+    const sender = await user.findOne({id: senderId})
+    const recipient = await user.findOne({id: recipientId})
+    if(sender && recipient){
+      recipient.sendedReq.forEach( (req, index) => {
+        if(req === senderId){
+          recipient.sendedReq.splice(index, 1)
+        }
+      })
+      sender.gotedReq.forEach( (req, index) => {
+        if(req === recipientId){
+          sender.gotedReq.splice(index, 1)
+        }
+      })
+      sender.friends.push(recipientId)
+      recipient.friends.push(senderId)
+      await sender.save()
+      await recipient.save()
+    }else{
+      throw "One of users not exist"
+    }
+  }
+  static async cancelReq(senderId, recipientId){
+    const sender = await user.findOne({id: senderId})
+    const recipient = await user.findOne({id: recipientId})
+    if(sender && recipient){
+      sender.sendedReq.forEach( (req, index) => {
+        if(req === recipientId){
+          sender.sendedReq.splice(index, 1)
+        }
+      })
+      recipient.gotedReq.forEach( (req, index) => {
+        if(req === senderId){
+          recipient.gotedReq.splice(index, 1)
+        }
+      })
+      await sender.save()
+      await recipient.save()
+      
+    }else{
+      throw "One of users not exist"
+    }
+  }
+  static async deleteFriend(senderId, recipientId){
+    const sender = await user.findOne({id: senderId})
+    const recipient = await user.findOne({id: recipientId})
+    if(sender && recipient){
+      sender.friends.forEach( (req, index) => {
+        if(req === recipientId){
+          sender.friends.splice(index, 1)
+        }
+      })
+      recipient.friends.forEach( (req, index) => {
+        if(req === senderId){
+          recipient.friends.splice(index, 1)
+        }
+      })
+      await sender.save()
+      await recipient.save()
+    }else{
+      throw "One of users not exist"
     }
   }
 }
