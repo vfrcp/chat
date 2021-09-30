@@ -1,4 +1,31 @@
-class WebSocket{
+const aWss = require("../App")
 
+class WebSocket{
+  static connect(ws, msg){
+    ws.id = msg.id
+    ws.username = msg.username
+    ws.send(JSON.stringify(msg))
+  }
+  static broadCast(senderId, recipientId, did){
+    let username
+    let action
+    switch (did) {
+      case "sendReq": action = "Sent a friend request"
+        break
+      case "cancelReq": action = "Canceled friend request"
+      default:
+        break
+    }
+    aWss.clients.forEach(client => {
+      if(client.id === senderId){
+        username = client.username
+      }
+    })
+    aWss.clients.forEach(client => {
+      if(client.id === recipientId){
+        client.send(JSON.stringify({action: "message", body: `User ${username} ${action}`}))
+      }
+    })
+  }
 }
 module.exports = WebSocket

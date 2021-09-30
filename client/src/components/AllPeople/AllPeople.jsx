@@ -4,9 +4,11 @@ import {Link} from "react-router-dom"
 import { useSelector } from "react-redux"
 
 import "./AllPeople.sass"
+import { WebSocketAndAuth } from "../../logic/wsAndAuthLogic"
 
 export default function AllPeople(){
   const auth = useSelector(state => state.auth)
+  const socket = useSelector(state => state.webSocket)
   const [page, setPage] = useState(1)
   const [people, setPeople] = useState([])
   const [searchInput, setSearchInput] = useState("")
@@ -29,7 +31,9 @@ export default function AllPeople(){
     }
   }, [sortedPeoples])
   const action = async (id, type) => {
+    console.log()
     await UsersApi.sendReq(id, type)
+    WebSocketAndAuth.sendAction(type, auth.id, id, socket)
     setPeople(await UsersApi.getAll())
   }
   return(

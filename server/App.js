@@ -19,7 +19,7 @@ App.use(express.urlencoded({extended: true}))
 
 const auth = require("./routers/auth")
 const users = require("./routers/users")
-const webSoket = require("./routers/websocket")
+const webSoket = require("./routers/webSocket")
 const err404 = require("./routers/err404")
 
 App.use("/auth", auth)
