@@ -16,11 +16,11 @@ router.post("/getFriends", async (req, res) => {
       const response = await User.get(tokens.tokenA.id, "friends")
       res.send(response)
     }else{
-      res.send({})
+      res.send([])
     }
   }catch(err){
     res.clearCookie("token")
-    res.send({})
+    res.send([])
   }
 })
 router.post("/getGotedReq", async (req, res) => {
@@ -30,11 +30,11 @@ router.post("/getGotedReq", async (req, res) => {
       const response = await User.get(tokens.tokenA.id, "gotedReq")
       res.send(response)
     }else{
-      res.send({})
+      res.send([])
     }
   }catch(err){
     res.clearCookie("token")
-    res.send({})
+    res.send([])
   }
 })
 router.post("/getSendedReq", async (req, res) => {
@@ -44,10 +44,26 @@ router.post("/getSendedReq", async (req, res) => {
       const response = await User.get(tokens.tokenA.id, "sendedReq")
       res.send(response)
     }else{
-      res.send({})
+      res.send([])
     }
   }catch(err){
-  res.send({})
+    res.clearCookie("token")
+    res.send([])
+  }
+})
+router.post("/getChats", async (req, res) => {
+  try{
+    const tokens = Tokens.verify(null, req.body.tokenA)
+    if(tokens.tokenA){
+      const response = await User.get(tokens.tokenA.id, "chats")
+      res.send(response) 
+    }else{
+      res.send([])
+    }
+  }catch(err){
+    console.log(err)
+    res.clearCookie("token")
+    res.send([])
   }
 })
 router.post("/sendReq", async (req, res) => {

@@ -20,11 +20,13 @@ App.use(express.urlencoded({extended: true}))
 const auth = require("./routers/auth")
 const users = require("./routers/users")
 const webSoket = require("./routers/webSocket")
+const chat = require("./routers/chat")
 const err404 = require("./routers/err404")
 
 App.use("/auth", auth)
 App.use("/users", users)
 App.use("/ws", webSoket)
+App.use("/chat", chat)
 App.use(err404)
 
 const start = async (PORT = 5000) => {

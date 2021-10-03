@@ -11,6 +11,7 @@ import AllPeople from "./AllPeople/AllPeople"
 import MyFriends from "./MyFriends/MyFriends"
 import GotedReq from "./GotedReq/GoterdReq"
 import Auth from "./Auth/Auth"
+import Chat from "./Chat/Chat"
 import Modal from "./Modal/Modal"
 
 export default function App(){
@@ -38,6 +39,7 @@ export default function App(){
           <Route exact path="/myFriends" component={MyFriends} />
           <Route exact path="/gotedReq" component={GotedReq} />
           <Route path="/auth/:type" component={Auth} />
+          <Route path={"/chat/:id"} component={() => <Chat setModalBody={setModalBody} />} />
           <Redirect to="/" />
         </Switch>
       </BrowserRouter>

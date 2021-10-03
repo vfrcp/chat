@@ -11,6 +11,7 @@ const userSchema = new Schema({
   friends: Array,
   gotedReq: Array,
   sendedReq: Array,
+  chats: Array,
   tokens: Array,
 }, { versionKey: false })
 
@@ -20,10 +21,52 @@ class User{
   static async getAll(){
     const users = await user.find({})
     const response = users.map(user => {
-      return {id: user.id, username: user.username, friends: user.friends, gotedReq: user.gotedReq, sendedReq: user.sendedReq}
+      return {id: user.id, username: user.username, friends: user.friends, gotedReq: user.gotedReq, sendedReq: user.sendedReq, chats: user.chats}
     })
     return response
   }
+  static async getById(id){
+    if(typeof id === "object"){
+      const response = await user.find({id: {$in: id}})
+      const users = []
+      for(const user of response){
+        const res = {id: user.id, username: user.username, friends: user.friends, gotedReq: user.gotedReq, sendedReq: user.sendedReq, chats: user.chats}
+        users.push(res)
+      }
+      return users
+    }else{
+      const response = await user.findOne({id})
+      if(response){
+        return {id: response.id, username: response.username, friends: response.friends, gotedReq: response.gotedReq, sendedReq: response.sendedReq, chats: response.chats}
+      }else{
+        throw "User not exist"
+      }
+    }
+  }
+  // From user property
+  static async get(id, type){
+    const candidate = await user.findOne({id})
+    if(candidate){
+      const data = candidate[type]
+      if(type === "chats"){
+        for(const chat of data){
+          const users = []
+          const usersRaw = await user.find({id: {$in: chat.users}}) 
+          for(const user of usersRaw){
+            const res = {id: user.id, username: user.username, friends: user.friends, gotedReq: user.gotedReq, sendedReq: user.sendedReq, chats: user.chats}
+            users.push(res)
+          }
+          chat.users = users
+        }
+        return data
+      }else{
+        return await user.find({id: {$in: data}})
+      }
+    }else{
+      throw "User not exist"
+    }
+  }
+
   static async register(id, username, email, password, tokenR){
     const withUsername = await user.findOne({username})
     const withEmail = await user.findOne({email})
@@ -47,7 +90,7 @@ class User{
         await candidate.save()
         return{id: candidate.id, username: candidate.username, message: "success"}
       }else{
-        throw "wrong password"
+        throw "Wrong password"
       }
     }else{
       throw "User not exist"
@@ -85,15 +128,6 @@ class User{
       candidate.tokens.push(Newtoken)
       await candidate.save()
       return {message: "success"}
-    }else{
-      throw "User not exist"
-    }
-  }
-  static async get(id, type){
-    const candidate = await user.findOne({id})
-    if(candidate){
-      const data = candidate[type]
-      return await user.find({id: { $in: data}})
     }else{
       throw "User not exist"
     }
@@ -172,6 +206,19 @@ class User{
     }else{
       throw "One of users not exist"
     }
+  }
+  static async addChat(chatId, firstId, secondId){
+    const first = await user.findOne({id: firstId})
+    const second = await user.findOne({id: secondId})
+    const chat = {
+      users: [firstId, secondId],
+      chatId,
+    }
+    first.chats.push(chat)
+    second.chats.push(chat)
+    await first.save()
+    await second.save()
+    return "succsess"
   }
 }
 

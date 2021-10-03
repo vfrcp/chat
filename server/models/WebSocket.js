@@ -13,6 +13,12 @@ class WebSocket{
       case "sendReq": action = "Sent a friend request"
         break
       case "cancelReq": action = "Canceled friend request"
+        break
+      case "acceptReq": action = "Accepted friend request"
+        break
+      case "deleteFriend": action = "Delete you from friends"
+        break
+      case "sentMessage": action = "sent you a message"
       default:
         break
     }

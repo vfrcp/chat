@@ -5,7 +5,6 @@ export class WebSocketAndAuth{
     if(Object.keys(auth).length){
       socket.onmessage = (event) => {
         const msg = JSON.parse(event.data)
-        console.log(setModal)
         switch(msg.action){
           case "message": setModal(msg.body)
             break

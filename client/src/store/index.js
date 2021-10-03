@@ -4,7 +4,7 @@ import { webSocketReducer } from "./webSocketReduser";
 
 const rootReducer = combineReducers({
   auth: authReducer,
-  webSocket: webSocketReducer
+  webSocket: webSocketReducer,
 })
 
 export const store = createStore(rootReducer)
