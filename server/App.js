@@ -22,6 +22,9 @@ const users = require("./routers/users")
 const webSoket = require("./routers/webSocket")
 const chat = require("./routers/chat")
 const err404 = require("./routers/err404")
+const authCheck = require("./middlewares/auth")
+
+App.use(authCheck)
 
 App.use("/auth", auth)
 App.use("/users", users)

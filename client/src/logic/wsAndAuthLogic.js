@@ -1,12 +1,16 @@
 import { AuthApi } from "../api/auth"
 
+
 export class WebSocketAndAuth{
   static connectWs(auth, socket, setModal){
     if(Object.keys(auth).length){
       socket.onmessage = (event) => {
+        console.log(JSON.parse(event.data))
         const msg = JSON.parse(event.data)
         switch(msg.action){
-          case "message": setModal(msg.body)
+          case "message": if(window.location.pathname.split("/")[1] !== "chat"){setModal(msg.body)}
+            break
+          case "sentChatMessage": console.log("helo")
             break
           default: 
         }

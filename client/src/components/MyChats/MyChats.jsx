@@ -60,6 +60,7 @@ export default function MyChats({history}){
         <div className="row main">
           { sortedchats.length ? 
             sortedchats.map((chat, index) => {
+              console.log(chat)
               if(page === 1 && index < 10){
                 return  <div className="col-sm-6" key={chat.users[0].id}>
                   <div className="card">

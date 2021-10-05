@@ -10,11 +10,11 @@ class WebSocket{
     let username
     let action
     switch (did) {
-      case "sendReq": action = "Sent a friend request"
+      case "sentFriendReq": action = "Sent a friend request"
         break
-      case "cancelReq": action = "Canceled friend request"
+      case "cancelFriendReq": action = "Canceled a friend request"
         break
-      case "acceptReq": action = "Accepted friend request"
+      case "acceptFriendReq": action = "Accepted a friend request"
         break
       case "deleteFriend": action = "Delete you from friends"
         break
@@ -29,7 +29,7 @@ class WebSocket{
     })
     aWss.clients.forEach(client => {
       if(client.id === recipientId){
-        client.send(JSON.stringify({action: "message", body: `User ${username} ${action}`}))
+        client.send(JSON.stringify({action: "alert", body: `User ${username} ${action}`}))
       }
     })
   }

@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react"
 import { UsersApi } from "../../api/users"
-import {Link} from "react-router-dom"
 import { useSelector } from "react-redux"
 import { WebSocketAndAuth } from "../../logic/wsAndAuthLogic"
 
@@ -61,7 +60,6 @@ export default function MyFriends({history}){
                     <div className="card-body">
                       <h5 className="card-title"><img style={{width: "50px"}} src={avatar} alt=""  /> {person.username}</h5>
                       <p className="card-text">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Distinctio blanditiis debitis, itaque atque excepturi commodi quaera.</p>
-                      <Link to="#" className="btn btn-primary">Chat</Link>
                       <button onClick={() => action(person.id, "acceptReq")} className="btn btn-primary">Accept request</button>
                     </div>
                   </div>
@@ -72,7 +70,6 @@ export default function MyFriends({history}){
                     <div className="card-body">
                       <h5 className="card-title"><img style={{width: "50px"}} src={avatar} alt=""  /> {person.username}</h5>
                       <p className="card-text">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Distinctio blanditiis debitis, itaque atque excepturi commodi quaera.</p>
-                      <Link to="#" className="btn btn-primary">Chat</Link>
                       <button onClick={() => action(person.id, "acceptReq")} className="btn btn-danger">Accept request</button>
                     </div>
                   </div>

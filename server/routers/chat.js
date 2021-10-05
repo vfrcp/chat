@@ -3,48 +3,51 @@ const router = Router()
 
 const {nanoid} = require("nanoid")
 
-const Tokens = require("../models/Tokens")
 const Chat = require("../models/Chat")
 const User = require("../models/User")
 
 router.post("/get/:id", async (req, res) => {
   try{
-    const tokens = Tokens.verify(null, req.body.tokenA)
-    if(tokens.tokenA){
+    if(req.auth.status){
       const response = await Chat.get(req.params.id)
       if(response.users.includes(tokens.tokenA.id)){
         const users = await User.getById(response.users)
         response.users = users
-        res.send(response)
+        res.send({message: "success", ...response})
       }else{
-        res.send({})
+        res.send({message: "wrong"})
       }
     }else{
-      res.send({})
+      res.send({message: "auth error"})
     }
   }catch(err){
-    console.log(err.message)
-    res.send({})
+    res.send({message: err.message})
   }
 })
-router.post("/send", (req, res) => {
-  
+router.post("/sendMessage", async (req, res) => {
+  try{
+    if(req.auth.status){
+      await Chat.sendMessage(req.body.chatId, tokens.tokenA.id, req.body.message)
+      res.send({message: "success"})
+    }else{
+      res.send({message: "auth error"})
+    }
+  }catch(err){
+    res.send({message: err.message})
+  }
 })
 router.post("/create", async (req, res) => {
   try{
-    const tokens = Tokens.verify(null, req.body.tokenA)
-    if(tokens.tokenA){
+    if(req.auth.status){
       const id = nanoid()
-      const response = await Chat.create(id, tokens.tokenA.id, req.body.recipientId)
+      await Chat.create(id, tokens.tokenA.id, req.body.recipientId)
       await User.addChat(id, tokens.tokenA.id, req.body.recipientId)
-      if(response.message === "success"){
-        res.send({id})
-      }
+      res.send({id, message: "success"})
     }else{
-      res.send({})
+      res.send({message: "auth error"})
     }
   }catch(err){
-    res.send({})
+    res.send({message: err.message})
   }
 })
 

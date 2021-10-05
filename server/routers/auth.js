@@ -14,9 +14,9 @@ router.post("/register", async (req, res) => {
       maxAge: 1000 * 3600 * 24 * 30,
       httpOnly: true 
     })
-    res.send({id, username: req.body.username, token: tokens.tokenA})
+    res.send({id, username: req.body.username, token: tokens.tokenA, message: "success", changeTokenA: req.auth.ChangeTokenA})
   }catch(err){
-    res.send({message: err})
+    res.send({message: err.message, changeTokenA: req.auth.ChangeTokenA})
   }
 })
 
@@ -29,9 +29,9 @@ router.post("/login", async (req, res) => {
       maxAge: 1000 * 3600 * 24 * 30,
       httpOnly: true 
     })
-    res.send({id: response.id, username: response.username, token: tokens.tokenA})
+    res.send({id: response.id, username: response.username, token: tokens.tokenA, message: "success", changeTokenA: req.auth.ChangeTokenA})
   }catch(err){
-    res.send({message: err})
+    res.send({message: err.message, changeTokenA: req.auth.ChangeTokenA})
   }
 })
 
@@ -40,36 +40,8 @@ router.post("/logout", async (req, res) => {
     const tokens = Tokens.verify(req.cookies.token)
     await User.logout(tokens.tokenR.id, req.cookies.token)
     res.clearCookie("token")
-    res.send({message: "logouted"})
-  }catch(err){
-
-  }
-})
-
-router.post("/check", async (req, res) => {
-  try{
-    const tokens = Tokens.verify(null, req.body.tokenA)
-    if(tokens.tokenA){
-      res.send({token: req.body.tokenA, ...tokens.tokenA})
-    }else{
-      const tokens = Tokens.verify(req.cookies.token)
-      if(tokens.tokenR){
-        const newTokens = Tokens.create(tokens.tokenR.id, tokens.tokenR.username)
-        await User.rewriteToken(tokens.tokenR.id, newTokens.tokenR, req.cookies.token)
-        res.cookie("token", newTokens.tokenR, {
-          maxAge: 1000 * 3600 * 24 * 30,
-          httpOnly: true,
-        })
-        res.send({token: newTokens.tokenA, ...tokens.tokenR})
-      }else{
-        res.clearCookie("token")
-        res.send({})
-      }
-    }
-  }catch(err){
-    res.clearCookie("token")
-    res.send({})
-  }
+    res.send({message: "success", changeTokenA: req.auth.ChangeTokenA})
+  }catch(err){}
 })
 
 module.exports = router

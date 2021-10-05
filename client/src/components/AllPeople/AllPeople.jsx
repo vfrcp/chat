@@ -93,7 +93,9 @@ export default function AllPeople({history}){
                 })
                 person.chats.forEach(chat => {
                   if(chat.users.includes(auth.id)){
-                    chatStatus = chat.id
+                    console.log(chat)
+                    chatStatus = chat.chatId
+                    console.log(chatStatus)
                   }
                 })
                 if(!color || !inner){

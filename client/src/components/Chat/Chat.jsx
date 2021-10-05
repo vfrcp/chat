@@ -37,8 +37,18 @@ export default function Chat({setModalBody}){
     )
   }, [auth, id, setModalBody])
   const send = () => {
-    console.log(input)
-    WebSocketAndAuth.sendAction("sentMessage", auth.id, chat.users[0].id, socket)
+    const message ={
+      messageId: Date.now() + Math.random(),
+      senderId: auth.id,
+      body: input,
+      date: Date.now()
+    }
+    WebSocketAndAuth.sendAction("message", auth.id, chat.users[0].id, socket)
+    WebSocketAndAuth.sendAction("sentChatMessage", auth.id, chat.users[0].id, socketChat.current)
+    ChatApi.sendMessage(chat.id, message)
+    const newChat = {...chat}
+    newChat.messages.push(message)
+    setChat(newChat)
     setInput("")
   }
   return(
@@ -51,16 +61,15 @@ export default function Chat({setModalBody}){
                 <span className="pb-3">Chat with {chat.users[0].username}</span> 
               </div>
               <div className="messageArea flex-grow-1 overflow-auto">
-              <div className="d-flex flex-row p-3 message"> <img src={avatar} alt="" width="60" height="60" />
-                  <div className="chat ml-2 p-3">Hello and thankyou for visiting birdlymind. Please click the video above</div>
-              </div>
-              <div className="d-flex flex-row p-3 message">
-                  <div className="bg-white mr-2 p-3">
-                    <span className="text-muted">Hello and thankyou for visiting birdlynind.</span>
-                  </div><img src={avatar} alt="" width="60" height="60" />
-              </div>
               {chat.messages.map((message, index) => {
-                return null
+                const color = (auth.id === message.senderId) ? "green" : "white" 
+                const plase = (auth.id === message.senderId) ? "l" : "r" 
+                return <div key={message.messageId} className={`d-flex justify-content-${plase === "l" ? "start" : "end"} flex-row p-3 message`}>
+                  {plase === "l" && <img src={avatar} alt="" width="60" height="60" />}
+                <div className={`chat bg-${color} m${plase}-2 p-3`}>
+                  <span className="text">{message.body}</span>
+                </div>{plase === "r" && <img src={avatar} alt="" width="60" height="60" />}
+                </div>
               })}
               </div>
               <div className="form-group px-3 d-flex align-items-center">
