@@ -10,22 +10,25 @@ const authCheck = async () => {
         id: tokens.tokenA.id,
         username: tokens.tokenA.username,
         status: true,
-        ChangeTokenA: false 
+        changeTokenA: false 
       }
     }else{
       if(tokens.tokenR){
         const {id, username} = tokens.tokenR
-        const newTokens = Tokens.create(id, username)
-        await User.rewriteToken(tokens.tokenR.id, newTokens.tokenR,req.cookies.token)
-        res.cookie("token", newTokens.tokenR, {
-          maxAge: 1000 * 3600 * 24 * 30,
-          httpOnly: true 
-        })
-        req.auth = {
-          id: tokens.tokenA.id,
-          username: tokens.tokenA.username,
-          status: true,
-          ChangeTokenA: newTokens.tokenA
+        const candidate = await User.getById(id) 
+        if (candidate.tokens.includes(tokens.tokenR)){
+          const newTokens = Tokens.create(id, username)
+          await User.rewriteToken(tokens.tokenR.id, newTokens.tokenR,req.cookies.token)
+          res.cookie("token", newTokens.tokenR, {
+            maxAge: 1000 * 3600 * 24 * 30,
+            httpOnly: true 
+          })
+          req.auth = {
+            id: tokens.tokenA.id,
+            username: tokens.tokenA.username,
+            status: true,
+            changeTokenA: newTokens.tokenA
+          }
         }
       }else{
         throw Error
@@ -35,6 +38,7 @@ const authCheck = async () => {
     res.clearCookie("token")
     req.auth = {
       status: false,
+      changeTokenA: false
     }
   }finally{
     next()

@@ -1,7 +1,18 @@
 
 export class AuthApi{
-  static async logOrReg(link, data){
-    let response = await fetch(link, {
+  static async login(data){
+    let response = await fetch(`${global.serverLink}/auth/login`, {
+      method: "POST",
+      credentials: "include",
+      headers:{
+        "Content-Type": "application/json;charset=utf-8",
+      },
+      body: JSON.stringify(data)
+    })
+      return await response.json()
+  }
+  static async register(data){
+    let response = await fetch(`${global.serverLink}/auth/register`, {
       method: "POST",
       credentials: "include",
       headers:{
@@ -24,21 +35,16 @@ export class AuthApi{
     })
     localStorage.removeItem("token")
   }
-  static async checkToken(){
-    const tokens = {}
-    tokens.tokenA = localStorage.getItem("token")
-    let response = await fetch(`${global.serverLink}/auth/check`, {
+  static async get(){
+    const tokenA = localStorage.getItem("token")
+    let response = await fetch(`${global.serverLink}/auth/getAuth`, {
       method: "POST",
       credentials: "include",
       headers:{
         "Content-Type": "application/json;charset=utf-8",
       },
-      body: JSON.stringify(tokens)
+      body: JSON.stringify(tokenA)
     })
-    response = await response.json()
-    if(!response.id){
-      response = {}
-    }
-    return response
+    return await response.json()
   }
 }

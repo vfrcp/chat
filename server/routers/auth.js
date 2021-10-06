@@ -5,6 +5,15 @@ const router = Router()
 const Tokens = require("../models/Tokens")
 const User = require("../models/User")
 
+router.post("/getAuth", async (req, res) => {
+  try{
+    const {id, username} = req.auth
+    res.send({id, username, message: "success", changeTokenA: req.auth.changeTokenA})
+  }catch(err){
+    res.send({message: err.message})
+  }
+})
+
 router.post("/register", async (req, res) => {
   try{
     const id = nanoid()
@@ -14,9 +23,9 @@ router.post("/register", async (req, res) => {
       maxAge: 1000 * 3600 * 24 * 30,
       httpOnly: true 
     })
-    res.send({id, username: req.body.username, token: tokens.tokenA, message: "success", changeTokenA: req.auth.ChangeTokenA})
+    res.send({id, username: req.body.username, token: tokens.tokenA, message: "success", changeTokenA: req.auth.changeTokenA})
   }catch(err){
-    res.send({message: err.message, changeTokenA: req.auth.ChangeTokenA})
+    res.send({message: err.message})
   }
 })
 
@@ -29,9 +38,9 @@ router.post("/login", async (req, res) => {
       maxAge: 1000 * 3600 * 24 * 30,
       httpOnly: true 
     })
-    res.send({id: response.id, username: response.username, token: tokens.tokenA, message: "success", changeTokenA: req.auth.ChangeTokenA})
+    res.send({id: response.id, username: response.username, token: tokens.tokenA, message: "success", changeTokenA: req.auth.changeTokenA})
   }catch(err){
-    res.send({message: err.message, changeTokenA: req.auth.ChangeTokenA})
+    res.send({message: err.message})
   }
 })
 
@@ -40,7 +49,7 @@ router.post("/logout", async (req, res) => {
     const tokens = Tokens.verify(req.cookies.token)
     await User.logout(tokens.tokenR.id, req.cookies.token)
     res.clearCookie("token")
-    res.send({message: "success", changeTokenA: req.auth.ChangeTokenA})
+    res.send({message: "success", changeTokenA: req.auth.changeTokenA})
   }catch(err){}
 })
 

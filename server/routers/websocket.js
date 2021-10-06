@@ -13,6 +13,7 @@ router.ws("/", (ws, req) => {
     }
   })
 })
+
 router.ws("/chat", (ws, req) => {
   ws.on("message", msg => {
     msg = JSON.parse(msg)

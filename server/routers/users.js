@@ -21,6 +21,7 @@ router.post("/getFriends", async (req, res) => {
     res.send({message: err.message})
   }
 })
+
 router.post("/getGotReq", async (req, res) => {
   try{
     if(req.auth.status){
@@ -34,11 +35,12 @@ router.post("/getGotReq", async (req, res) => {
     res.send({message: err.message})
   }
 })
+
 router.post("/getSentReq", async (req, res) => {
   try{
     if(req.auth.status){
       const response = await User.get(req.auth.id, "sentReq")
-      res.send({message: "success", ...response})
+      res.send({message: "success", changeTokenA: req.auth.changeTokenA, ...response})
     }else{
       res.send({message: "auth error"})
     }
@@ -47,11 +49,12 @@ router.post("/getSentReq", async (req, res) => {
     res.send({message: err.message})
   }
 })
+
 router.post("/getChats", async (req, res) => {
   try{
     if(req.auth.status){
       const response = await User.get(req.auth.id, "chats")
-      res.send({message: "success", ...response}) 
+      res.send({message: "success", changeTokenA: req.auth.changeTokenA, ...response}) 
     }else{
       res.send({message: "auth error"})
     }
@@ -60,11 +63,12 @@ router.post("/getChats", async (req, res) => {
     res.send({message: err.message})
   }
 })
+
 router.post("/sendFriendReq", async (req, res) => {
   try{
     if(req.auth.status){
       await User.sendReq(req.auth.id, req.body.recipientId)
-      res.send({message:"success"})
+      res.send({message:"success", changeTokenA: req.auth.changeTokenA})
     }else{
       res.send({message: "auth error"})
     }
@@ -72,11 +76,12 @@ router.post("/sendFriendReq", async (req, res) => {
     res.send({message: err.message})
   }
 })
+
 router.post("/acceptFriendReq", async (req, res) => {
   try{
     if(req.auth.status){
       await User.acceptReq(req.auth.id, req.body.recipientId)
-      res.send({message: "success"})
+      res.send({message: "success", changeTokenA: req.auth.changeTokenA})
     }else{
       res.send({message: "auth error"})
     }
@@ -84,11 +89,12 @@ router.post("/acceptFriendReq", async (req, res) => {
     res.send({message: err.message})
   }
 })
+
 router.post("/cancelFriendReq", async (req, res) => {
   try{
     if(req.auth.status){
       await User.cancelReq(req.auth.id, req.body.recipientId)
-      res.send({message: "auth error"})
+      res.send({message: "success", changeTokenA: req.auth.changeTokenA})
     }else{
       res.send({message: "wrong"})
     }
@@ -96,14 +102,16 @@ router.post("/cancelFriendReq", async (req, res) => {
     res.send({message: err.message})
   }
 })
+
 router.post("/deleteFriend", async (req, res) => {
   try{
     if(req.auth.status){
       await User.deleteFriend(req.auth.id, req.body.recipientId)
-      res.send({message: "success"})
+      res.send({message: "success", changeTokenA: req.auth.changeTokenA})
     }else{
       res.send({message: "auth error"})
     }
   }catch(err){}
 })
+
 module.exports = router
