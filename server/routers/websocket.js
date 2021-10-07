@@ -4,8 +4,10 @@ const router = Router()
 const Websocket = require("../models/WebSocket")
 
 router.ws("/", (ws, req) => {
+  console.log()
   ws.on("message", msg => {
     msg = JSON.parse(msg)
+    console.log(msg)
     switch(msg.action){
       case "connect": Websocket.connect(ws, msg)
         break

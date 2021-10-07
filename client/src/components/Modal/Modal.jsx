@@ -1,4 +1,4 @@
-import React, {useState} from "react"
+import React, { useState } from "react"
 
 import sound from "../../assets/audio/new_message.wav"
 import { useDispatch, useSelector } from "react-redux"
@@ -6,22 +6,21 @@ import { useDispatch, useSelector } from "react-redux"
 import "./Modal.sass"
 
 export default function Modal(){
-  const [modalBody, setModalBody] = useState("fdgdfg")
+  const [modalBody, setModalBody] = useState("")
   const stateModalBody = useSelector(state => state.modal)
+  const notification = new Audio(sound)
   const dispatch = useDispatch()
-  console.log(stateModalBody)
   if(!stateModalBody){
     dispatch({type: "SET_MODAL", payload: setModalBody}) 
     // Проверка есть ли в store тело модалки,
     // если есть значит не нужно перезначать(чтобы не не было бесконечного цикла) 
   }
-  const notification = new Audio(sound)
-  // if(modalBody){
-  //   notification.play()
-  //   setTimeout(() => {
-  //     setModalBody("")
-  //   }, 5000)
-  // }
+  if(modalBody){
+    notification.play()
+    setTimeout(() => {
+      setModalBody("")
+    }, 5000)
+  }
   return(
     modalBody &&
     <div className="message">

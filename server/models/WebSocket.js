@@ -8,7 +8,7 @@ class WebSocket{
   }
   static broadCast(senderId, recipientId, action){
     let username
-    let body
+    let body = "test"
     switch (action) {
       case "sentFriendReq": body = "Sent a friend request"
         break

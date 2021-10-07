@@ -9,7 +9,8 @@ export class AuthApi{
       },
       body: JSON.stringify(data)
     })
-      return await response.json()
+      response = await response.json()
+      return response
   }
   static async register(data){
     let response = await fetch(`${global.serverLink}/auth/register`, {
@@ -20,31 +21,44 @@ export class AuthApi{
       },
       body: JSON.stringify(data)
     })
-      return await response.json()
+      response = await response.json()
+      return response
   }
   static async logout(){
-    const tokens = {}
-    tokens.tokenA = localStorage.getItem("token")
+    const tokenA = localStorage.getItem("token")
     await fetch(`${global.serverLink}/auth/logout`, {
       method: "POST",
       credentials: "include",
       headers:{
         "Content-Type": "application/json;charset=utf-8",
       },
-      body: JSON.stringify(tokens)
+      body: JSON.stringify({tokenA})
     })
     localStorage.removeItem("token")
   }
   static async get(){
     const tokenA = localStorage.getItem("token")
-    let response = await fetch(`${global.serverLink}/auth/getAuth`, {
+    let response = await fetch(`${global.serverLink}/auth/get`, {
       method: "POST",
       credentials: "include",
       headers:{
         "Content-Type": "application/json;charset=utf-8",
       },
-      body: JSON.stringify(tokenA)
+      body: JSON.stringify({tokenA})
     })
-    return await response.json()
+    response = await response.json()
+    return response
+  }
+  static async loginOrRegister(data, type){
+    let response = await fetch(`${global.serverLink}/auth/${type}`, {
+      method: "POST",
+      credentials: "include",
+      headers:{
+        "Content-Type": "application/json;charset=utf-8",
+      },
+      body: JSON.stringify(data)
+    })
+    response = await response.json()    
+    return response
   }
 }

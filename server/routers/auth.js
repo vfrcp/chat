@@ -5,10 +5,14 @@ const router = Router()
 const Tokens = require("../models/Tokens")
 const User = require("../models/User")
 
-router.post("/getAuth", async (req, res) => {
+router.post("/get", async (req, res) => {
   try{
-    const {id, username} = req.auth
-    res.send({id, username, message: "success", changeTokenA: req.auth.changeTokenA})
+    if(req.auth.status){
+      const {id, username} = req.auth
+      res.send({id, username, message: "success", changeTokenA: req.auth.changeTokenA})
+    }else{
+      res.send({message: "not auth"})
+    }
   }catch(err){
     res.send({message: err.message})
   }
