@@ -26,47 +26,60 @@ class User{
     })
     return response
   }
-  static async getById(id){
+  static async getById(id, token = false){
     if(typeof id === "object"){
       const response = await user.find({id: {$in: id}})
       const users = []
       for(const user of response){
         const {id, username, friends, gotReq, sentReq, chats} = user
         const res = {id, username, friends, gotReq, sentReq, chats}
+        if(token){
+          res.tokens = user.tokens
+        }
         users.push(res)
       }
       return users
     }else{
-      const response = await user.findOne({id})
-      if(response){
-        const {id, username, friends, gotReq, sentReq, chats} = response
-        return {id, username, friends, gotReq, sentReq, chats}
-      }else{
-        throw {message: "User not exist"}
+      try{
+        const response = await user.findOne({id})
+        if(response){
+          const {id, username, friends, gotReq, sentReq, chats} = response
+          const data = [id, username, friends, gotReq, sentReq, chats]
+          if(token){
+            data.tokens = response.tokens
+          }
+          return data
+        }else{
+          throw {message: "User not exist"}
+        }
+      }catch(err){
+        console.log(err.message)
       }
     }
   }
   // Получить поле пользователя с базы, Если поле chats значит возвращаються имя и id пользователей которые находяться там  
-  static async get(id, type){
+  static async getProperty(id, property){
     const candidate = await user.findOne({id})
     if(candidate){
-      const data = candidate[type]
-      if(type === "chats"){
+      const data = candidate[property]
+      if(property === "chats"){
+        const users = []
         for(const chat of data){
-          const users = []
           const usersRaw = await user.find({id: {$in: chat.users}}) 
           for(const user of usersRaw){
-            const {id, username} = user
-            const res = {id, username}
-            users.push(res)
+            const {id, username, friends, gotReq, sentReq, chats} = user
+            users.push({id, username, friends, gotReq, sentReq, chats})
           }
-          chat.users = users
         }
-        return data
+        return users
       }else{
         const response = await user.find({id: {$in: data}})
-        const {id, username, friends, gotReq, sentReq, chats} = response
-        return {id, username, friends, gotReq, sentReq, chats}
+        const users = []
+        response.forEach(user => {
+          const {id, username, friends, gotReq, sentReq, chats} = user
+          users.push({id, username, friends, gotReq, sentReq, chats})
+        })
+        return users
       }
     }else{
       throw {message: "User not exist"}
@@ -142,11 +155,16 @@ class User{
   static async sendFriendReq(senderId, recipientId){
     const sender = await user.findOne({id: senderId})
     const recipient = await user.findOne({id: recipientId})
+    console.log(sender.id, recipient.id, "this is ids")
     if(sender && recipient){
+      if(sender.sentReq.includes(recipientId) && recipient.gotReq.includes(senderId)){
+        throw {message: "Users already have requsts"}
+      }
       sender.sentReq.push(recipientId),
       recipient.gotReq.push(senderId)
       await sender.save()
       await recipient.save()
+      console.log("here")
     }else{
       throw {message: "One of users not exist"}
     }
@@ -155,6 +173,9 @@ class User{
     const sender = await user.findOne({id: senderId})
     const recipient = await user.findOne({id: recipientId})
     if(sender && recipient){
+      if(sender.friends.includes(recipientId) && recipient.friends.includes(senderId)){
+        throw {message: "Users already friends"}
+      }
       recipient.sentReq.forEach( (req, index) => {
         if(req === senderId){
           recipient.sentReq.splice(index, 1)

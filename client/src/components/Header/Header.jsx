@@ -8,6 +8,7 @@ import { AuthApi } from "../../api/auth"
 export default function Header(){
   const dispatch = useDispatch()
   const location = useLocation().pathname
+  console.log(location)
   const auth = useSelector(state => state.auth)
   const logout = async () => {
     await AuthApi.logout()
@@ -35,7 +36,7 @@ export default function Header(){
               {
                 location === "/mychats" ?
                 <span style={{cursor: "pointer"}} className="nav-link active">My Chats</span> :
-                <Link className="nav-link" to="/myChats">My Chats</Link>
+                <Link className="nav-link" to="/mychats">My Chats</Link>
               }
               </li>
             }
@@ -43,7 +44,7 @@ export default function Header(){
               {
                 location === "/allpeople" ?
                 <span style={{cursor: "pointer"}} className="nav-link active">All people</span> :
-                <Link className="nav-link" to="/allPeople">All people</Link>
+                <Link className="nav-link" to="/allpeople">All people</Link>
               }
             </li>
             {
@@ -52,7 +53,7 @@ export default function Header(){
               {
                 location === "/myfriends" ?
                 <span style={{cursor: "pointer"}} className="nav-link active" >My Friends</span> :
-                <Link className="nav-link" to="/myFriends">My Friends</Link>
+                <Link className="nav-link" to="/myfriends">My Friends</Link>
               }
               </li>
             }
@@ -60,9 +61,9 @@ export default function Header(){
               auth &&
               <li className="nav-item">
               {
-                location === "/gotFriendsReq" ?
-                <span style={{cursor: "pointer"}} className="nav-link active" >Got Reqequsts</span> :
-                <Link className="nav-link" to="/gotedReq">Got Reqequsts</Link>
+                location === "/gotreq" ?
+                <span style={{cursor: "pointer"}} className="nav-link active" >Got Requests</span> :
+                <Link className="nav-link" to="/gotreq">Got Requests</Link>
               }
               </li>
             }

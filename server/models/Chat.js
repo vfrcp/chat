@@ -15,7 +15,7 @@ class Chat{
     return {message: "success"}
   }
   static async get(id){
-    const candidate = chat.findOne({id})
+    const candidate = await chat.findOne({id})
     if(candidate){
       return candidate
     }else{
@@ -24,7 +24,6 @@ class Chat{
   }
   static async sendMessage(chatId, senderId, message){
     const candidate = await chat.findOne({id: chatId})
-    console.log(candidate.users)
     if(candidate && candidate.users.includes(senderId)){
       candidate.messages.push(message)
       await candidate.save()

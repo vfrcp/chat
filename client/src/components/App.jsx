@@ -7,12 +7,9 @@ import { WebSocketLogic } from "../logic/webSocket"
 
 import Header from "./Header/Header"
 import Main from "./Main/Main"
-// import MyChats from "./MyChats/MyChats"
-// import AllPeople from "./AllPeople/AllPeople"
-// import MyFriends from "./MyFriends/MyFriends"
-// import GotFriendsReq from "./GotReq/GotFriendsReq"
+import UsersList from "./UsersList/UsersList"
 import Auth from "./Auth/Auth"
-// import Chat from "./Chat/Chat"
+import Chat from "./Chat/Chat"
 import Modal from "./Modal/Modal"
 
 export default function App(){
@@ -24,7 +21,9 @@ export default function App(){
     const start = async () => {
       await AuthLogic.set(dispatch)
     }
-    start()
+    if(localStorage.getItem("token")){
+      start()
+    }
   }, [dispatch])
   useEffect(() => {
     // нужно доделать взаимодействие с модалкой
@@ -40,11 +39,11 @@ export default function App(){
         <Switch> 
           <Route exact path="/" component={Main} />
           <Route path="/auth/:type" component={Auth} />
-          {/* <Route exact path="/mychats" component={MyChats} />
-          <Route exact path="/allpeople" component={AllPeople} />
-          <Route exact path="/myfriends" component={MyFriends} />
-          <Route exact path="/gotfriendsReq" component={GotReq} />
-          <Route path={"/chat/:id"} component={Chat} /> */}
+          <Route exact path="/mychats" component={() => <UsersList type="chats" label="Chats" />} />
+          <Route exact path="/allpeople" component={() => <UsersList type="all" label="People" />} />
+          <Route exact path="/myfriends" component={() => <UsersList type="friends" label="Friends" />} />
+          <Route exact path="/gotReq" component={() => <UsersList type="gotReq" label="Got friends request" />} />
+          <Route path={"/chat/:id"} component={Chat} />
           <Redirect to="/" />
         </Switch>
       </BrowserRouter>

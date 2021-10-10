@@ -13,13 +13,11 @@ export default function Auth({history}){
     event.preventDefault()
     let data = new FormData(event.target)
     data = Object.fromEntries(data)    
-    let response = await AuthLogic.loginOrRegister(data, type)
-    if(response.message === "success"){
-      dispatch({type: "SET_AUTH", payload: {id: response.id, username: response.username}})
-      localStorage.setItem("token", response.token)
+    let response = await AuthLogic.loginOrRegister(data, type, dispatch)
+    if(response === "success"){
       history.push("/")
     }else{
-      errHandler.current.textContent = response.message
+      errHandler.current.textContent = response
       errHandler.current.style.color = "red"
       setTimeout( () =>{
         errHandler.current.textContent = "Username"

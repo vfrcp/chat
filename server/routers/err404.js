@@ -1,5 +1,5 @@
 const err404 = (req, res) => {
-  console.log({message: "404"})
+  console.log(req.originalUrl, "Error 404: URL")
   res.send({message: "not found"})
 }
 

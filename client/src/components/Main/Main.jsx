@@ -1,7 +1,17 @@
 import React from "react"
+import { useSelector } from "react-redux"
+
+import "./Main.sass"
 
 export default function Main(){
+  const auth = useSelector(state => state.auth)
+  let username = "Guest"
+  if(auth){
+    username = auth.username
+  } 
   return(
-    <h1>Main</h1>
+    <section className="main">
+      <h1>Hello {username}</h1>
+    </section>
   )
 }

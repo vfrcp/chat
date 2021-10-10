@@ -10,11 +10,11 @@ class WebSocket{
     let username
     let body = "test"
     switch (action) {
-      case "sentFriendReq": body = "Sent a friend request"
+      case "sentReq": body = "Sent a friend request"
         break
-      case "cancelFriendReq": body = "Canceled a friend request"
+      case "cancelReq": body = "Canceled a friend request"
         break
-      case "acceptFriendReq": body = "Accepted a friend request"
+      case "acceptReq": body = "Accepted a friend request"
         break
       case "deleteFriend": body = "Delete you from friends"
         break

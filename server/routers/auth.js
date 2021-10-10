@@ -27,7 +27,8 @@ router.post("/register", async (req, res) => {
       maxAge: 1000 * 3600 * 24 * 30,
       httpOnly: true 
     })
-    res.send({id, username: req.body.username, token: tokens.tokenA, message: "success", changeTokenA: req.auth.changeTokenA})
+    const changeTokenA = req.auth ? req.auth.changeTokenA : false
+    res.send({id, username: req.body.username, token: tokens.tokenA, message: "success", changeTokenA})
   }catch(err){
     res.send({message: err.message})
   }
@@ -42,7 +43,8 @@ router.post("/login", async (req, res) => {
       maxAge: 1000 * 3600 * 24 * 30,
       httpOnly: true 
     })
-    res.send({id: response.id, username: response.username, token: tokens.tokenA, message: "success", changeTokenA: req.auth.changeTokenA})
+    const changeTokenA = req.auth ? req.auth.changeTokenA : false
+    res.send({id: response.id, username: response.username, token: tokens.tokenA, message: "success", changeTokenA})
   }catch(err){
     res.send({message: err.message})
   }
@@ -53,7 +55,7 @@ router.post("/logout", async (req, res) => {
     const tokens = Tokens.verify(req.cookies.token)
     await User.logout(tokens.tokenR.id, req.cookies.token)
     res.clearCookie("token")
-    res.send({message: "success", changeTokenA: req.auth.changeTokenA})
+    res.send({message: "success"})
   }catch(err){}
 })
 
