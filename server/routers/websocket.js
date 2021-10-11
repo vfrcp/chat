@@ -23,7 +23,7 @@ router.ws("/chat", (ws, req) => {
       case "connect": Websocket.connect(ws, msg)
         break
       case "sentChatMessage": Websocket.broadCast(msg.senderId, msg.recipientId, msg.action)
-      default: Websocket.broadCast(ws.id, msg.recipientId, msg.action)
+      default: Websocket.broadCast(ws.id, msg.recipientId, msg.action, msg.body)
     }
   })
 })

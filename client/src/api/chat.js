@@ -12,6 +12,8 @@ export class ChatApi{
     return response
   }
   static async sendMessage(chatId, message){
-
+    let response = await fetchWrap("chat/sendMessage", {chatId, message})
+    response = await response.json()
+    return response
   }
 }

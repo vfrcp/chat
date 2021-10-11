@@ -11,14 +11,16 @@ import avatar from "../../assets/img/avatar.png"
 export default function Chat(){
   const history = useHistory()
   const auth = useSelector(state => state.auth)
-  const socket = useSelector(state => state.webSocket)
-  const modal = useSelector(state => state.modal)
   if(!auth){
     history.push("/")
   }
+  const socket = useSelector(state => state.webSocket)
+  const modal = useSelector(state => state.modal)
   const {id} = useParams()
   const [chat, setChat] = useState({})
+  const [newMessage, setNewMessage] = useState(null)
   const [input, setInput] = useState("")
+  const messageArea = useRef()
   const socketChat = useRef(new WebSocket(`ws://${global.serverLink.split("//")[1]}/ws/chat`)) 
   useEffect(() => {
     const getAll = async () =>{
@@ -30,19 +32,33 @@ export default function Chat(){
             response.body.users.splice(index, 1)
           }
         })
-        WebSocketLogic.connect(auth, socketChat.current, modal)
         setChat(response.body)
+        WebSocketLogic.connect(auth, socketChat.current, modal, setNewMessage)
       }else{
         history.push("/")
       }
     }
     if(auth && socket){
       getAll()
+      console.log(messageArea.current)
+      // messageArea.current.scrollTop = messageArea.current.scrollHeight
     }
     return(
       setChat([])
     )
-  }, [auth, id, modal])
+  }, [auth, id, modal, history, socket])
+  useEffect(() => {
+    // логика сокета при получении нового сообщения изменяет переменую newMessage,
+    // запускаеться этот useEfect и передает сообщение в chat.messages 
+    if(newMessage){
+      const newChat = {...chat}
+      console.log(newChat)
+      newChat.messages.push(newMessage)
+      setChat(newChat)
+      messageArea.current.script.scrollTop = messageArea.current.scrollHeight
+      setNewMessage(null)
+    }
+  }, [newMessage, chat])
   const send = () => {
     const message ={
       messageId: Date.now() + Math.random(),
@@ -51,11 +67,8 @@ export default function Chat(){
       date: Date.now()
     }
     WebSocketLogic.sendAction("alert", auth.id, chat.users[0].id, socket)
-    WebSocketLogic.sendAction("sentChatMessage", auth.id, chat.users[0].id, socketChat.current)
+    WebSocketLogic.sendAction("sentChatMessage", auth.id, chat.users[0].id, socketChat.current, message)
     ChatLogic.sendMessage(chat.id, message)
-    const newChat = {...chat}
-    newChat.messages.push(message)
-    setChat(newChat)
     setInput("")
   }
   return(
@@ -67,7 +80,7 @@ export default function Chat(){
               <div className="d-flex flex-row justify-content-between p-3 adiv text-white">
                 <span className="pb-3">Chat with {chat.users[0].username}</span> 
               </div>
-              <div className="messageArea flex-grow-1 overflow-auto">
+              <div ref={messageArea} className="messageArea flex-grow-1 overflow-auto">
               {chat.messages.map((message, index) => {
                 const color = (auth.id === message.senderId) ? "green" : "white" 
                 const plase = (auth.id === message.senderId) ? "l" : "r" 

@@ -6,11 +6,11 @@ class WebSocket{
     ws.username = msg.username
     ws.send(JSON.stringify(msg))
   }
-  static broadCast(senderId, recipientId, action){
+  static broadCast(senderId, recipientId, action, msgBody){
     let username
-    let body = "test"
+    let body = ""
     switch (action) {
-      case "sentReq": body = "Sent a friend request"
+      case "sendReq": body = "Sent a friend request"
         break
       case "cancelReq": body = "Canceled a friend request"
         break
@@ -18,7 +18,7 @@ class WebSocket{
         break
       case "deleteFriend": body = "Delete you from friends"
         break
-      case "sentMessage": body = "sent you a message"
+      case "sentChatMessage": body = "sent you a message"
       default:
         break
     }
@@ -29,7 +29,12 @@ class WebSocket{
     })
     aWss.clients.forEach(client => {
       if(client.id === recipientId){
-        client.send(JSON.stringify({action: "alert", body: `User ${username} ${body}`}))
+        if(body){
+          client.send(JSON.stringify({action: "alert", body: `User ${username} ${body},`}))
+        }if(action === "sentChatMessage"){
+          console.log("here")
+          client.send(JSON.stringify({action: "message", body: msgBody}))
+        }
       }
     })
   }

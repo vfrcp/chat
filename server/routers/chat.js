@@ -28,7 +28,7 @@ router.post("/get/:id", async (req, res) => {
 router.post("/sendMessage", async (req, res) => {
   try{
     if(req.auth.status){
-      await Chat.sendMessage(req.body.chatId, tokens.tokenA.id, req.body.message)
+      await Chat.sendMessage(req.body.chatId, req.auth.id, req.body.message)
       res.send({message: "success", changeTokenA: req.auth.changeTokenA})
     }else{
       res.send({message: "unauth"})

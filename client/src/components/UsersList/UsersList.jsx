@@ -95,6 +95,7 @@ export default function UsersList({type, label}){
               let color = "primary"
               let inner = "Add to friends"
               let typeAction = "modal"
+              let chatId = false
               if(auth){
                 if(person.username === auth.username){return false}
                 color = person.friends.includes(auth.id) ? "danger" :
@@ -111,13 +112,12 @@ export default function UsersList({type, label}){
                   person.gotReq.includes(auth.id) ? "cancelReq" :
                   person.sentReq.includes(auth.id) ? "acceptReq" :
                   "sendReq"
+                person.chats.forEach(chat => {
+                  if(chat.users.includes(auth.id)){
+                    chatId = chat.chatId
+                  }
+                })
               }
-              let chatId = false
-              person.chats.forEach(chat => {
-                if(chat.users.includes(auth.id)){
-                  chatId = chat.chatId
-                }
-              })
                 if(page === 1 && index < 10){
                   return  <div className="col-sm-6" key={person.id}>
                     <div className="card">

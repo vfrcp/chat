@@ -11,7 +11,7 @@ export default function Main(){
   } 
   return(
     <section className="main">
-      <h1>Hello {username}</h1>
+      <h1>Hello {username}, this is site where you can text with others</h1>
     </section>
   )
 }
