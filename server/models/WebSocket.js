@@ -32,7 +32,6 @@ class WebSocket{
         if(body){
           client.send(JSON.stringify({action: "alert", body: `User ${username} ${body},`}))
         }if(action === "sentChatMessage"){
-          console.log("here")
           client.send(JSON.stringify({action: "message", body: msgBody}))
         }
       }

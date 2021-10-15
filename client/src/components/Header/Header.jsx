@@ -1,6 +1,6 @@
 import React from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { useLocation } from "react-router"
+import { useLocation, useHistory } from "react-router"
 import { Link } from "react-router-dom"
 import { AuthApi } from "../../api/auth"
 
@@ -8,11 +8,12 @@ import { AuthApi } from "../../api/auth"
 export default function Header(){
   const dispatch = useDispatch()
   const location = useLocation().pathname
-  console.log(location)
+  const history = useHistory()
   const auth = useSelector(state => state.auth)
   const logout = async () => {
     await AuthApi.logout()
     dispatch({type: "SET_AUTH", payload: null})
+    history.push("/")
   }
   return(
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">

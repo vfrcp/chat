@@ -1,11 +1,16 @@
 import React, { useRef } from "react"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { useParams } from "react-router"
-import { Link } from "react-router-dom"
+import { Link, useHistory } from "react-router-dom"
 
 import { AuthLogic } from "../../logic/auth"
 
-export default function Auth({history}){
+export default function Auth(){
+  const history = useHistory()
+  const auth = useSelector(state => state.auth)
+  if(auth){
+    history.push("/")
+  }
   const type = useParams().type
   const dispatch = useDispatch()
   const errHandler = useRef()
@@ -15,7 +20,7 @@ export default function Auth({history}){
     data = Object.fromEntries(data)    
     let response = await AuthLogic.loginOrRegister(data, type, dispatch)
     if(response === "success"){
-      history.push("/")
+      document.location.href = "/"
     }else{
       errHandler.current.textContent = response
       errHandler.current.style.color = "red"

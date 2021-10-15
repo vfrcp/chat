@@ -53,7 +53,7 @@ class User{
           throw {message: "User not exist"}
         }
       }catch(err){
-        console.log(err.message)
+        
       }
     }
   }
@@ -155,7 +155,6 @@ class User{
   static async sendFriendReq(senderId, recipientId){
     const sender = await user.findOne({id: senderId})
     const recipient = await user.findOne({id: recipientId})
-    console.log(sender.id, recipient.id, "this is ids")
     if(sender && recipient){
       if(sender.sentReq.includes(recipientId) && recipient.gotReq.includes(senderId)){
         throw {message: "Users already have requsts"}
@@ -164,7 +163,7 @@ class User{
       recipient.gotReq.push(senderId)
       await sender.save()
       await recipient.save()
-      console.log("here")
+      ("here")
     }else{
       throw {message: "One of users not exist"}
     }

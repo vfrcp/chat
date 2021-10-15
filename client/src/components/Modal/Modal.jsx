@@ -2,12 +2,12 @@ import React, { useState } from "react"
 
 import sound from "../../assets/audio/new_message.wav"
 import { useDispatch, useSelector } from "react-redux"
-
 import "./Modal.sass"
 
 export default function Modal(){
   const [modalBody, setModalBody] = useState("")
   const stateModalBody = useSelector(state => state.modal)
+  const stateRenderList = useSelector(state => state.renderList)
   const notification = new Audio(sound)
   const dispatch = useDispatch()
   if(!stateModalBody){
@@ -17,9 +17,13 @@ export default function Modal(){
   }
   if(modalBody){
     notification.play()
+    //Нужен для рендера списка юзеров чтобы когда пришло уведомление от webSocket
+    setTimeout(() => {
+      stateRenderList(new Date())
+    }, 300)
     setTimeout(() => {
       setModalBody("")
-    }, 5000)
+    }, 3000)
   }
   return(
     modalBody &&

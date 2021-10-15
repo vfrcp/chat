@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useMemo} from "react"
-import { useSelector } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
 import { useHistory } from "react-router-dom"
 
 import { UserLogic } from "../../logic/user"
@@ -10,9 +10,12 @@ import "./Userlist.sass"
 
 export default function UsersList({type, label}){
   const history = useHistory()
+  const dispatch = useDispatch()
   const auth = useSelector(state => state.auth)
   const socket = useSelector(state => state.webSocket)
   const modal = useSelector(state => state.modal)
+  // Обяснения в modal.jsx
+  const [render, setRender] = useState(new Date())
   const [page, setPage] = useState(1)
   const [people, setPeople] = useState([])
   const [searchInput, setSearchInput] = useState("")
@@ -25,10 +28,11 @@ export default function UsersList({type, label}){
   useEffect(() => {
     if(!auth){
       const forbiddenTypesForAnauth = ["chats", "friends", "got"]
-      if(forbiddenTypesForAnauth.includes("type")){
+      if(forbiddenTypesForAnauth.includes(type)){
         history.push("/")
       }
     }
+    dispatch({type: "SET_RENDERLIST", payload: setRender})
     const getAll = async () =>{
       if(type === "all"){
         setPeople(await UserLogic.getAll())
@@ -40,7 +44,7 @@ export default function UsersList({type, label}){
     return(
       setPeople([])
     )
-  }, [type, auth, history])
+  }, [type, auth, history, render, dispatch])
   useEffect(() => {
     if(sortedPeople){
       setPage(1)

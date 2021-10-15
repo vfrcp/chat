@@ -3,7 +3,6 @@ export class WebSocketLogic{
     if(auth){
       socket.onmessage = (event) => {
         const msg = JSON.parse(event.data)
-        console.log(msg)
         switch(msg.action){
           case "alert": modal(msg.body)
             break
@@ -17,11 +16,9 @@ export class WebSocketLogic{
           default: 
         }
       }
-      socket.send(JSON.stringify({action: "connect", username: auth.username, id: auth.id}))
       setTimeout(() => {
-        console.log("sent")
-        socket.send(JSON.stringify({action: "alert", recipientId: auth.id}))
-      }, 4000)
+        socket.send(JSON.stringify({action: "connect", username: auth.username, id: auth.id}))
+      }, 1000)
     }
   }
   static sendAction(action, senderId, recipientId, socket, body){

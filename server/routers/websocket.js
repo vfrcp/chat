@@ -6,7 +6,6 @@ const Websocket = require("../models/WebSocket")
 router.ws("/", (ws, req) => {
   ws.on("message", msg => {
     msg = JSON.parse(msg)
-    console.log(msg)
     switch(msg.action){
       case "connect": Websocket.connect(ws, msg)
         break
@@ -18,7 +17,6 @@ router.ws("/", (ws, req) => {
 router.ws("/chat", (ws, req) => {
   ws.on("message", msg => {
     msg = JSON.parse(msg)
-    console.log(msg)
     switch(msg.action){
       case "connect": Websocket.connect(ws, msg)
         break

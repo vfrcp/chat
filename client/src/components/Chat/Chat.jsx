@@ -21,11 +21,12 @@ export default function Chat(){
   const [newMessage, setNewMessage] = useState(null)
   const [input, setInput] = useState("")
   const messageArea = useRef()
+  // alredyScroled нужна чтобы не пролистовать каждый раз чат
+  const alredyScroled = useRef(false)
   const socketChat = useRef(new WebSocket(`ws://${global.serverLink.split("//")[1]}/ws/chat`)) 
   useEffect(() => {
     const getAll = async () =>{
       const response = await ChatLogic.get(id)
-      console.log(response)
       if(response.message === "success"){
         response.body.users.forEach((user, index) => {
           if(user.id === auth.id){
@@ -38,10 +39,8 @@ export default function Chat(){
         history.push("/")
       }
     }
-    if(auth && socket){
+    if(auth && socket && messageArea){
       getAll()
-      console.log(messageArea.current)
-      // messageArea.current.scrollTop = messageArea.current.scrollHeight
     }
     return(
       setChat([])
@@ -52,13 +51,17 @@ export default function Chat(){
     // запускаеться этот useEfect и передает сообщение в chat.messages 
     if(newMessage){
       const newChat = {...chat}
-      console.log(newChat)
       newChat.messages.push(newMessage)
       setChat(newChat)
-      messageArea.current.script.scrollTop = messageArea.current.scrollHeight
       setNewMessage(null)
     }
   }, [newMessage, chat])
+  useEffect(() => {
+    if(messageArea.current && !alredyScroled.current){
+      messageArea.current.scrollTop = messageArea.current.scrollHeight
+      alredyScroled.current = true
+    }
+  })
   const send = () => {
     const message ={
       messageId: Date.now() + Math.random(),
@@ -69,6 +72,7 @@ export default function Chat(){
     WebSocketLogic.sendAction("alert", auth.id, chat.users[0].id, socket)
     WebSocketLogic.sendAction("sentChatMessage", auth.id, chat.users[0].id, socketChat.current, message)
     ChatLogic.sendMessage(chat.id, message)
+    chat.messages.push(message)
     setInput("")
   }
   return(

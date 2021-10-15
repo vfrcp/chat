@@ -11,7 +11,6 @@ export class ChatLogic{
   }
   static async sendMessage(chatId, message){
     const response = await ChatApi.sendMessage(chatId, message)
-    console.log(response)
     return response
   }
 }
